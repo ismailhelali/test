@@ -1,34 +1,43 @@
-/* Add your CSS styles here */
+/* styles.css */
 body {
-    font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
+h1 {
+  text-align: center;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+#search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
-table, th, td {
-    border: 1px solid #ccc;
+.product {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  border-radius: 5px;
 }
 
-th, td {
-    padding: 10px;
-    text-align: left;
+.product h2 {
+  margin: 0;
 }
 
-th {
-    background-color: #f2f2f2;
+.product p {
+  margin: 5px 0;
 }
