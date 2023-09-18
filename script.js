@@ -1,76 +1,53 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const retrieveDataButton = document.getElementById("retrieveDataButton");
-    const clientSearchInput = document.getElementById("clientSearch");
-    const searchClientButton = document.getElementById("searchClientButton");
-    const clientList = document.getElementById("clientList");
-    const data = []; // Array to store the retrieved data from file.js
+// Sample products array (replace this with your actual data from File.js)
+const products = [
+    {
+        date: '08/16/2023',
+        type: 'LC',
+        client: '7TH GARDEN ICE:003051951000084',
+        name: 'Vinaigre blanc PIK 50 cl',
+        quantity: 26
+    },
+    // Add more product objects here
+];
 
-    // Function to create a button for each client
-    function createClientButton(clientName) {
-        const button = document.createElement("button");
-        button.textContent = clientName;
-        button.addEventListener("click", () => filterClientsBy(clientName));
-        return button;
-    }
+// Function to populate the client dropdown
+function populateClientDropdown() {
+    const clientDropdown = document.getElementById('clientDropdown');
+    const clients = [...new Set(products.map(product => product.client))]; // Get unique clients
 
-    // Function to display all client names
-    function displayAllClients() {
-        clientList.innerHTML = "";
-        const clientNames = [...new Set(data.map((item) => item.client))];
-        clientNames.forEach((clientName) => {
-            const button = createClientButton(clientName);
-            clientList.appendChild(button);
-        });
-    }
-
-    // Function to filter clients by a specific client name
-    function filterClientsBy(clientName) {
-        const filtered = data.filter(
-            (item) => item.client.toLowerCase().includes(clientName.toLowerCase())
-        );
-        displayFilteredClients(filtered);
-    }
-
-    // Function to display filtered clients
-    function displayFilteredClients(filteredClientsArray) {
-        clientList.innerHTML = "";
-        filteredClientsArray.forEach((item) => {
-            const button = createClientButton(item.client);
-            clientList.appendChild(button);
-        });
-    }
-
-    // Function to load data from file.js
-    function loadDataFromFile() {
-        // Replace 'file.js' with the actual path to your JavaScript file
-        fetch("file.js")
-            .then((response) => response.text())
-            .then((fileContents) => {
-                // Extract the 'products' array from the file contents
-                const startIndex = fileContents.indexOf("[");
-                const endIndex = fileContents.lastIndexOf("]") + 1;
-                const productsArray = JSON.parse(fileContents.substring(startIndex, endIndex));
-                data.push(...productsArray);
-
-                // Display all client names initially
-                displayAllClients();
-            })
-            .catch((error) => console.error("Error loading data:", error));
-    }
-
-    // Event listener for the "Retrieve Data" button
-    retrieveDataButton.addEventListener("click", () => {
-        loadDataFromFile();
-        retrieveDataButton.disabled = true;
+    // Create options for each client
+    clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client;
+        option.textContent = client;
+        clientDropdown.appendChild(option);
     });
+}
 
-    // Event listener for the "Search" button
-    searchClientButton.addEventListener("click", () => {
-        const clientName = clientSearchInput.value.trim();
-        if (clientName === "") {
-            displayAllClients();
-        } else {
-            filterClientsBy(clientName);
-        }
-    });
-});
+// Function to display products based on selected client
+function displayProducts() {
+    const selectedClient = document.getElementById('clientDropdown').value;
+    const productListDiv = document.getElementById('productList');
+    
+    if (!selectedClient) {
+        productListDiv.innerHTML = ''; // Clear the product list
+        return;
+    }
+
+    const filteredProducts = products.filter(product => product.client === selectedClient);
+
+    // Create an HTML list to display products
+    const productListHTML = filteredProducts.map(product => `
+        <div class="product">
+            <p>Date: ${product.date}</p>
+            <p>Type: ${product.type}</p>
+            <p>Name: ${product.name}</p>
+            <p>Quantity: ${product.quantity}</p>
+        </div>
+    `).join('');
+
+    productListDiv.innerHTML = productListHTML;
+}
+
+// Populate the client dropdown when the page loads
+populateClientDropdown();
