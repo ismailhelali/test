@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Product Search</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
     <h1>Product Search</h1>
-    <input type="text" id="search-input" placeholder="Search by name or client">
+    <input type="text" id="search-input" placeholder="Search products...">
     <div id="product-list"></div>
-  </div>
-  <!-- Load File.js before script.js -->
   <script src="File.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>
+
+<script>
+
+
+
+// Function to display filtered products
+function displayFilteredProducts(query) {
+    const productList = document.getElementById('product-list');
+    productList.innerHTML = '';
+
+    const filteredProducts = products.filter(product => {
+        const searchTerms = query.toLowerCase().split(' ');
+        return searchTerms.every(term => {
+            return (
+                product.date.toLowerCase().includes(term) ||
+                product.type.toLowerCase().includes(term) ||
+                product.client.toLowerCase().includes(term) ||
+                product.name.toLowerCase().includes(term)
+            );
+        });
+    });
+
+    if (filteredProducts.length === 0) {
+        productList.innerHTML = '<p>No matching products found.</p>';
+    } else {
+        filteredProducts.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.classList.add('product-item');
+            productItem.innerHTML = `
+                <p>Date: ${product.date}</p>
+                <p>Type: ${product.type}</p>
+                <p>Client: ${product.client}</p>
+                <p>Name: ${product.name}</p>
+                <p>Quantity: ${product.quantity}</p>
+            `;
+            productList.appendChild(productItem);
+        });
+    }
+}
+
+// Listen for input in the search box
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value;
+    displayFilteredProducts(query);
+});
+
+// Display all products initially
+displayFilteredProducts('');
+
+</script>
 
