@@ -241,12 +241,8 @@ h1.title {
 	</label>
 
       </div>
-    <!-- PDF button -->
-	  <div class="fixed">
 
-        <!-- ON CLICK GENERATE PDF-->
-        <button onclick="generatePdf()" id="pdf-button">Télécharger La Liste</button>
-</div>
+	 
     <!-- product table -->
     <table class="tableliste">
       <thead>
@@ -271,13 +267,12 @@ h1.title {
 <script src="File.js"></script>
 
 <script>
-// get the client name from the user 
-
+// Get the client name from local storage
 let clientName = localStorage.getItem('clientName');
 
 if (!clientName) {
-  clientName = prompt('Please enter your name or the name of your company:');
-  localStorage.setItem('clientName', clientName);
+    clientName = prompt('Please enter your name or the name of your company:');
+    localStorage.setItem('clientName', clientName);
 }
 
 // Display the client name in a stylish div
@@ -286,215 +281,53 @@ nameDiv.innerHTML = `Client Name: ${clientName}`;
 nameDiv.classList.add('client-name');
 document.body.appendChild(nameDiv);
 
-
 function generateTableRows(products) {
-  const table = document.getElementById('product-table');
-  table.innerHTML = ''; // clear the table
-  F.forEach(product => {
-    const row = document.createElement('tr');
-	 row.className = "active-row";
-    row.innerHTML = `
-    <td>
-        <input  type="number" value="${product.quantity}">
-
-      
-      <td>
-        <input type="date" value="${product.date}">
-      </td>
-      <td>${product.type}</td>
-      <td>${product.client}</td>
+    const table = document.getElementById('product-table');
+    table.innerHTML = ''; // clear the table
+    products.forEach(product => {
+        const row = document.createElement('tr');
+        row.className = "active-row";
+        row.innerHTML = `
+            <td>${product.date}</td>
+            <td>${product.type}</td>
+            <td>${product.client}</td>
             <td>${product.name}</td>
-            <td>${product.quantity}</td>
+            <td>
+                <input class="inputquantity" type="number" value="${product.quantity}">
+            </td>
+        `;
 
-      
-    `;
-    const checkbox = row.querySelector('input[type="checkbox"]');
-    checkbox.addEventListener('click', () => {
-      product.checked = checkbox.checked;
-    });
+        const quantityInput = row.querySelector('input[type="number"]');
+        quantityInput.addEventListener('change', () => {
+            product.quantity = parseInt(quantityInput.value);
+        });
 
-    const quantityInput = row.querySelector('input[type="number"]');
-    quantityInput.addEventListener('change', () => {
-      product.quantity = parseInt(quantityInput.value);
+        table.appendChild(row);
     });
-    const unitSelect = row.querySelector('select');
-    unitSelect.addEventListener('change', () => {
-      product.unit = unitSelect.value;
-    });
-    table.appendChild(row);
-    
-  });
 }
 
 const searchField = document.getElementById('search-field');
 const categorySelect = document.getElementById('category-select');
 
 searchField.addEventListener('input', () => {
-  const query = searchField.value.toLowerCase();
-  const filteredProducts = products.filter(product => {
-    return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
-  });
-  generateTableRows(filteredProducts);
+    const query = searchField.value.toLowerCase();
+    const filteredProducts = products.filter(product => {
+        return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
+    });
+    generateTableRows(filteredProducts);
 });
 
 categorySelect.addEventListener('change', () => {
-  const category = categorySelect.value;
-  const filteredProducts = category ? products.filter(product => product.category === category) : products;
-  generateTableRows(filteredProducts);
+    const category = categorySelect.value;
+    const filteredProducts = category ? products.filter(product => product.category === category) : products;
+    generateTableRows(filteredProducts);
 });
 
-
 window.onload = () => {
-  generateTableRows(products);
+    generateTableRows(products);
 };
 
-
-// HNAYA ZDNA TEMPLATE
-// HNAYA ZDNA TEMPLATE
-// HNAYA ZDNA TEMPLATE
-// HNAYA ZDNA TEMPLATE
-// HNAYA ZDNA TEMPLATE
-
-function generatePdf(){
-  let p=[];
-  let i = 1;
-  products.forEach(product => {
-    if(product.checked ==true){
-        
-      p.push([i++,product.name,product.category,0,product.quantity,product.unit,0]);
-        
-    }
-
-  });
-
-props.invoice.table = p;
-
-  var pdfObject = jsPDFInvoiceTemplate.default(props); 
-  console.log('Object created:',pdfObject);
-}
-
-var props = {
-    outputType: jsPDFInvoiceTemplate.OutputType.Save,
-    returnJsPDFDocObject: true,
-    fileName: "solidernet 2023",
-    orientationLandscape: false,
-    compress: true,
-  
-
-    business: {
-        name: "Solidernet",
-        address: "Temara , Maroc",
-        phone: "(+212) 0667-041734",
-        email: "solidernet@hotmail.com",
-        website: "https://solidernet.ma",
-    },
-    contact: {
-        label: "Invoice issued for:",
-        name: localStorage.getItem('clientName'),
-        
-    },
-    invoice: {
-        label: "Invoice #: ",
-        num: 1,
-        invDate: "-",
-        invGenDate: "-",
-        headerBorder: false,
-        tableBodyBorder: false,
-        header: [
-          {
-            title: "#", 
-            style: { 
-              width: 10 
-            } 
-          }, 
-          { 
-            title: "Title",
-            style: {
-              width: 30
-            } 
-          }, 
-          { 
-            title: "Description",
-            style: {
-              width: 80
-            } 
-          }, 
-          { title: "Price"},
-          { title: "Quantité"},
-          { title: "Unité"},
-          { title: "Total"}
-        ],
-        
-       table: [],
-        additionalRows: [{
-            col1: 'Total:',
-            col2: '145,250.50',
-            col3: 'ALL',
-            style: {
-                fontSize: 14 //optional, default 12
-            }
-        },
-        {
-            col1: 'VAT:',
-            col2: '0',
-            col3: '%',
-            style: {
-                fontSize: 10 //optional, default 12
-            }
-        },
-        {
-            col1: 'SubTotal:',
-            col2: '0',
-            col3: 'ALL',
-            style: {
-                fontSize: 10 //optional, default 12
-            }
-        }],
-        invDescLabel: "Invoice Note",
-        invDesc: "SOLIDERNET SARL.",
-    },
-    footer: {
-        text: "DEMANDE DE DEVIS.",
-    },
-    pageEnable: true,
-    pageLabel: "Page ",
-};
-
-//end template
-  </script>
+// Add your additional JavaScript code here
+	    </script>
   </body>
   </html>
-
-<style>
-/* Make the checkbox larger */
-.custom-checkbox {
-  width: 30px;
-  height: 30px;
-}
-
-/* Make the background color visible */
-.custom-checkbox:before {
-  background-color: #ffffff;
-}
-
-/* Change the color on hover */
-.custom-checkbox:hover:before {
-  background-color: #f1f1f1;
-}
-
-/* Add a border when checked */
-.custom-checkbox:checked:before {
-  border: 2px solid #000000;
-}
-</style>
-
-
-
-<script>
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1;
-  var yyyy = today.getFullYear();
-
-  document.getElementById("current-date").innerHTML += dd+'/'+mm+'/'+yyyy;
-</script>
