@@ -1,43 +1,28 @@
-/* styles.css */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
 
 h1 {
-  text-align: center;
+    color: #333;
 }
 
 #search-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  font-size: 16px;
+    width: 80%;
+    padding: 10px;
+    margin: 20px auto;
+    border: 1px solid #333;
+    border-radius: 5px;
 }
 
-.product {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-  border-radius: 5px;
+#product-list {
+    width: 80%;
+    margin: 0 auto;
+    text-align: left;
 }
 
-.product h2 {
-  margin: 0;
-}
-
-.product p {
-  margin: 5px 0;
+.product-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
 }
