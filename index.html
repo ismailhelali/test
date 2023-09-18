@@ -1,27 +1,194 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Retrieval and Display</title>
-    <script src="script.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SOLIDERNET Product List</title>
+  
+  <!-- include jspdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<!-- include Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- include Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.16.0/dist/umd/popper.min.js" integrity="sha384-/N/t9aO/QE+tNg8+DpTJ/Yzq3Z"></script>
+  
+  <!-- include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!-- include custom CSS -->
+  <style>
+    /* add custom styling here */
+  </style>
 </head>
 <body>
-    <h1>Data Retrieval and Display</h1>
-
-    <!-- Button to trigger data retrieval -->
-    <button id="retrieveDataButton">Retrieve Data</button>
-
-    <!-- Search input and button for filtering clients -->
-    <div>
-        <label for="clientSearch">Search for Client:</label>
-        <input type="text" id="clientSearch" placeholder="Enter client name...">
-        <button id="searchClientButton">Search</button>
+  <div class="container-fluid">
+    <!-- search field -->
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <input type="search" class="form-control" id="search-field" placeholder="Search products">
+      </div>
     </div>
-
-    <!-- Container to display client buttons -->
-    <div id="clientList">
-        <!-- Client buttons will be added dynamically using JavaScript -->
+    <!-- category dropdown -->
+    <div class="row mt-3">
+      <div class="col-md-6 offset-md-3">
+        <select class="form-control" id="category-select">
+<option value="">All categories</option>      
+<option value="">Farine et couscouset Riz et BlÃ©et Noix  et Pates</option>
+<option value="Les huiles">Les huiles</option>
+<option value="Les sauces">Les sauces</option>
+<option value="Les Fromages">Les Fromages</option>
+<option value="Les sucres">Les sucres</option>
+<option value="ThÃ© et infusions">ThÃ© et infusions</option>
+<option value="Autres produits Alimentaires">Autres produits Alimentaires</option>
+<option value="charcuterie">charcuterie</option>
+<option value="Conserve Alimentaires">Conserve Alimentaires</option>
+<option value="Sels">Sels</option>
+<option value="Vinaigres">Vinaigres</option>
+<option value="Les AMANDES ET Noix">Les AMANDES ET Noix</option>
+<option value="Chocolat">Chocolat</option>
+<option value="Topping et Sirop">Topping et Sirop</option>
+<option value="Confiture et Miel">Confiture et Miel</option>
+<option value="PurÃ©">PurÃ©</option>
+<option value="Les Jus">Les Jus</option>
+<option value="Les ArÃ´mes">Les ArÃ´mes</option>
+<option value="Les CrÃ©mes pour patisserie et cuissons">Les CrÃ©mes pour patisserie et cuissons</option>
+<option value="Epices et Feculant et Herbes">Epices et Feculant et Herbes</option>
+<option value="Barquettes Sushi">Barquettes Sushi</option>
+<option value="Boite Salad en Kraft et Plastique">Boite Salad en Kraft et Plastique</option>
+<option value="Les Goblets">Les Goblets</option>
+<option value="Les Pot de sauce">Les Pot de sauce</option>
+<option value="Barquettes Aluminium">Barquettes Aluminium</option>
+<option value="Boite Pizza">Boite Pizza</option>
+<option value="Barquette Mousse">Barquette Mousse</option>
+<option value="Autres Produits demballage">Autres Produits demballage</option>
+<option value="Produits dentretien">Produits dentretien</option>
+<option value="Les Boullons">Les Boullons</option>
+<option value="Autres Produits pour patisseries">Autres Produits pour patisseries</option>
+          <!-- add options for categories here -->
+        </select>
+      </div>
     </div>
-</body>
-</html>
+    <!-- product table -->
+    <table class="table mt-3">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody id="product-table">
+        <!-- table rows will be added here by JavaScript -->
+      </tbody>
+    </table>
+    <!-- PDF button -->
+    <div class="row mt-3">
+      <div class="col-md-6 offset-md-3">
+        <button class="btn btn-primary btn-block" id="pdf-button">Enregistrer Votre Liste PDF</button>
+      </div>
+    </div>
+  </div>
+  <script src="File.js"></script>
+   <script>
+
+
+
+   
+function generateTableRows(products) {
+  const table = document.getElementById('product-table');
+  table.innerHTML = ''; // clear the table
+  products.forEach(product => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>
+        <input type="date" ${products.date}"> ''}>
+      </td>
+      <td>${products.type}</td>
+      <td>${products.client}</td>
+      <td>${products.name}</td>
+
+      <td>
+        <input type="number" value="${product.quantity}">
+      </td>
+          `;
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener('click', () => {
+      product.checked = checkbox.checked;
+    });
+    const quantityInput = row.querySelector('input[type="number"]');
+    quantityInput.addEventListener('change', () => {
+      product.quantity = parseInt(quantityInput.value);
+    });
+    const unitSelect = row.querySelector('select');
+    unitSelect.addEventListener('change', () => {
+      product.unit = unitSelect.value;
+    });
+    table.appendChild(row);
+  });
+}
+
+const searchField = document.getElementById('search-field');
+const categorySelect = document.getElementById('category-select');
+
+
+searchField.addEventListener('input', () => {
+  const query = searchField.value.toLowerCase();
+  const filteredProducts = products.filter(product => {
+    return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
+  });
+  generateTableRows(filteredProducts);
+});
+
+categorySelect.addEventListener('change', () => {
+  const category = categorySelect.value;
+  const filteredProducts = category ? products.filter(product => product.category === category) : products;
+  generateTableRows(filteredProducts);
+});
+
+
+// get the button element
+const button = document.getElementById('pdf-button');
+
+// add a click event listener to the button
+button.addEventListener('click', () => {
+  // create a new PDF document
+  const doc = new jsPDF();
+
+  // add a title to the document
+  doc.text('Selected products', 10, 10);
+
+  // initialize a y-position variable for adding content to the PDF
+  let y = 20;
+
+  // loop through the products array
+  for (const product of products) {
+    // check if the product is checked
+    if (product.checked) {
+      // add the product name, quantity, and unit to the PDF
+      doc.text(`${product.name} - Quantity: ${product.quantity} - Unit: ${product.unit}`, 10, y);
+      // increment the y-position for the next piece of content
+      y += 10;
+    }
+  }
+
+  // save the PDF
+  doc.save('selected-products.pdf');
+});
+
+
+
+
+
+window.onload = () => {
+  generateTableRows(products);
+};
+
+
+
+  </script>
+
+
+
+  </body>
+  </html>
