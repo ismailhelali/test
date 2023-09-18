@@ -1,17 +1,13 @@
-// Sample products array (replace this with your actual data from File.js)
-const products = [
-    {
-        date: '08/16/2023',
-        type: 'LC',
-        client: '7TH GARDEN ICE:003051951000084',
-        name: 'Vinaigre blanc PIK 50 cl',
-        quantity: 26
-    },
-    // Add more product objects here
-];
+// Function to load data from File.js
+function loadData(callback) {
+    fetch('File.js')
+        .then(response => response.json())
+        .then(data => callback(data))
+        .catch(error => console.error('Error loading data:', error));
+}
 
 // Function to populate the client dropdown
-function populateClientDropdown() {
+function populateClientDropdown(products) {
     const clientDropdown = document.getElementById('clientDropdown');
     const clients = [...new Set(products.map(product => product.client))]; // Get unique clients
 
@@ -25,7 +21,7 @@ function populateClientDropdown() {
 }
 
 // Function to display products based on selected client
-function displayProducts() {
+function displayProducts(products) {
     const selectedClient = document.getElementById('clientDropdown').value;
     const productListDiv = document.getElementById('productList');
     
@@ -49,5 +45,11 @@ function displayProducts() {
     productListDiv.innerHTML = productListHTML;
 }
 
-// Populate the client dropdown when the page loads
-populateClientDropdown();
+// Load data and initialize the page
+loadData(data => {
+    // Assuming data from File.js is an array of objects
+    populateClientDropdown(data);
+    document.getElementById('clientDropdown').addEventListener('change', () => {
+        displayProducts(data);
+    });
+});
