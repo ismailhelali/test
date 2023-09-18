@@ -1,28 +1,15 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
+/* Add some basic styling to the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-h1 {
-    color: #333;
+table, th, td {
+    border: 1px solid black;
 }
 
-#search-input {
-    width: 80%;
-    padding: 10px;
-    margin: 20px auto;
-    border: 1px solid #333;
-    border-radius: 5px;
-}
-
-#product-list {
-    width: 80%;
-    margin: 0 auto;
+th, td {
+    padding: 8px;
     text-align: left;
-}
-
-.product-item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px 0;
 }
