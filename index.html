@@ -2,159 +2,123 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>SOLIDERNET Product List</title>
-  
-  <!-- include jspdf library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-<!-- include Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<!-- include Bootstrap JavaScript -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.16.0/dist/umd/popper.min.js" integrity="sha384-/N/t9aO/QE+tNg8+DpTJ/Yzq3Z"></script>
-  
-  <!-- include Bootstrap CSS -->
+  <!-- Include jspdf library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+  <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <!-- include custom CSS -->
-  <style>
-    /* add custom styling here */
-  </style>
+  <!-- Include Bootstrap JavaScript and Popper.js -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.16.0/dist/umd/popper.min.js" integrity="sha384-/N/t9aO/QE+tNg8+DpTJ/Yzq3Z"></script>
 </head>
 <body>
   <div class="container-fluid">
-    <!-- search field -->
+    <!-- Search field -->
     <div class="row">
       <div class="col-md-6 offset-md-3">
         <input type="search" class="form-control" id="search-field" placeholder="Search products">
       </div>
     </div>
-    <!-- category dropdown -->
+    <!-- Category dropdown -->
     <div class="row mt-3">
       <div class="col-md-6 offset-md-3">
         <select class="form-control" id="category-select">
-<option value="">All categories</option>      
-
-          <!-- add options for categories here -->
+          <option value="">All categories</option>
+          <!-- Add options for categories here -->
         </select>
       </div>
     </div>
-    <!-- product table -->
+    <!-- Product table -->
     <table class="table mt-3">
       <thead>
         <tr>
           <th>Date</th>
-          <th>Product</th>
+          <th>Product Name</th>
           <th>Quantity</th>
-          <th>Product</th>
           <th>Unit</th>
+          <!-- Add more columns for other product attributes as needed -->
         </tr>
       </thead>
       <tbody id="product-table">
-        <!-- table rows will be added here by JavaScript -->
+        <!-- Table rows will be added here by JavaScript -->
       </tbody>
     </table>
     <!-- PDF button -->
     <div class="row mt-3">
       <div class="col-md-6 offset-md-3">
-        <button class="btn btn-primary btn-block" id="pdf-button">Enregistrer Votre Liste PDF</button>
+        <button class="btn btn-primary btn-block" id="pdf-button">Generate PDF</button>
       </div>
     </div>
   </div>
   <script src="products.js"></script>
-   <script>
- 
-
-function generateTableRows(products) {
-  const table = document.getElementById('product-table');
-  table.innerHTML = ''; // clear the table
-  products.forEach(product => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-           <td>${product.name}</td>
-      <td>${product.name}</td>
-      <td>${product.name}</td>
-      <td>${product.name}</td>
-
-      <td>${product.name}</td>
-      
-    `;
-    const checkbox = row.querySelector('input[type="checkbox"]');
-    checkbox.addEventListener('click', () => {
-      product.checked = checkbox.checked;
-    });
-    const quantityInput = row.querySelector('input[type="number"]');
-    quantityInput.addEventListener('change', () => {
-      product.quantity = parseInt(quantityInput.value);
-    });
-    const unitSelect = row.querySelector('select');
-    unitSelect.addEventListener('change', () => {
-      product.unit = unitSelect.value;
-    });
-    table.appendChild(row);
-  });
-}
-
-const searchField = document.getElementById('search-field');
-const categorySelect = document.getElementById('category-select');
-
-
-searchField.addEventListener('input', () => {
-  const query = searchField.value.toLowerCase();
-  const filteredProducts = products.filter(product => {
-    return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
-  });
-  generateTableRows(filteredProducts);
-});
-
-categorySelect.addEventListener('change', () => {
-  const category = categorySelect.value;
-  const filteredProducts = category ? products.filter(product => product.category === category) : products;
-  generateTableRows(filteredProducts);
-});
-
-
-// get the button element
-const button = document.getElementById('pdf-button');
-
-// add a click event listener to the button
-button.addEventListener('click', () => {
-  // create a new PDF document
-  const doc = new jsPDF();
-
-  // add a title to the document
-  doc.text('Selected products', 10, 10);
-
-  // initialize a y-position variable for adding content to the PDF
-  let y = 20;
-
-  // loop through the products array
-  for (const product of products) {
-    // check if the product is checked
-    if (product.checked) {
-      // add the product name, quantity, and unit to the PDF
-      doc.text(`${product.name} - Quantity: ${product.quantity} - Unit: ${product.unit}`, 10, y);
-      // increment the y-position for the next piece of content
-      y += 10;
+  <script>
+    function generateTableRows(products) {
+      const table = document.getElementById('product-table');
+      table.innerHTML = ''; // Clear the table
+      products.forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${product.date}</td>
+          <td>${product.name}</td>
+          <td>${product.quantity}</td>
+          <td>${product.unit}</td>
+          <!-- Add more columns for other product attributes as needed -->
+        `;
+        table.appendChild(row);
+      });
     }
-  }
 
-  // save the PDF
-  doc.save('selected-products.pdf');
-});
+    const searchField = document.getElementById('search-field');
+    const categorySelect = document.getElementById('category-select');
 
+    searchField.addEventListener('input', () => {
+      const query = searchField.value.toLowerCase();
+      const filteredProducts = products.filter(product => {
+        return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
+      });
+      generateTableRows(filteredProducts);
+    });
 
+    categorySelect.addEventListener('change', () => {
+      const category = categorySelect.value;
+      const filteredProducts = category ? products.filter(product => product.category === category) : products;
+      generateTableRows(filteredProducts);
+    });
 
+    // Get the button element
+    const button = document.getElementById('pdf-button');
 
+    // Add a click event listener to the button
+    button.addEventListener('click', () => {
+      // Create a new PDF document
+      const doc = new jsPDF();
 
-window.onload = () => {
-  generateTableRows(products);
-};
+      // Add a title to the document
+      doc.text('Selected products', 10, 10);
 
+      // Initialize a y-position variable for adding content to the PDF
+      let y = 20;
 
+      // Loop through the products array
+      for (const product of products) {
+        // Add the product details to the PDF
+        doc.text(`Date: ${product.date}`, 10, y);
+        y += 10;
+        doc.text(`Product: ${product.name}`, 10, y);
+        y += 10;
+        doc.text(`Quantity: ${product.quantity}`, 10, y);
+        y += 10;
+        doc.text(`Unit: ${product.name}`, 10, y);
+        y += 10;
+      }
 
+      // Save the PDF
+      doc.save('selected-products.pdf');
+    });
+
+    window.onload = () => {
+      generateTableRows(products);
+    };
   </script>
-
-
-
-  </body>
-  </html>
+</body>
+</html>
