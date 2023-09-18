@@ -1,66 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Historic Client</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Add your CSS styles here -->
-    <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Product Search</title>
 </head>
 <body>
-    <div class="titleDIV">
-        <br>
-        <h1 class="title">SOLIDERNET</h1>
-        <h2 class="title">Historique des Clients SOLIDERNET</h2>
-        <br>
-    </div>
-    <div class="dropdown">
-        <span>Comment ça marche ?</span>
-        <div class="dropdown-content">
-            <p class="product-process">Sélectionner les produits souhaités, entrez les quantités souhaitées, utilisez le champ de recherche pour trouver des produits spécifiques ou utiliser la liste déroulante pour filtrer les produits par catégorie. Il est également possible de générer un fichier PDF qui regroupe les produits sélectionnés et de l'envoyer par email ou WhatsApp pour obtenir un devis personnalisé.</p>
-        </div>
-    </div>
-    <div class="container-fluid">
-        <!-- search field -->
-        <div class="selectdiv">
-            <input type="search" id="search-field" placeholder="Rechercher un Client">
-            <label>
-                <select class="form-control" id="category-select">
-                    <option value="">Nos catégories</option>
-                    <option value="Autres produits Alimentaires">Autres produits Alimentaires</option>
-                    <option value="Autres Produits Emballage">Autres Produits Emballage</option>
-                    <!-- Add more category options here -->
-                </select>
-            </label>
-        </div>
-        <!-- PDF button -->
-        <div class="fixed">
-            <button onclick="generatePdf()" id="pdf-button">Télécharger La Liste</button>
-        </div>
-        <!-- product table -->
-        <table class="tableliste">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Client</th>
-                    <th>Article</th>
-                    <th>Quantité</th>
-                </tr>
-            </thead>
-            <tbody id="product-table">
-                <!-- table rows will be added here by JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    <p id="current-date">La date d'aujourd'hui :</p>
-
-    <!-- Include jQuery library -->
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-
-    <!-- Include jspdf-invoice-template library -->
-    <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
-
-    <!-- Include your JavaScript file -->
-    <script src="script.js"></script>
+  <div class="container">
+    <h1>Product Search</h1>
+    <input type="text" id="search-input" placeholder="Search by name or client">
+    <div id="product-list"></div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
