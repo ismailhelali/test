@@ -1,55 +1,47 @@
-// Function to load data from File.js
-function loadData(callback) {
-    fetch('File.js')
-        .then(response => response.json())
-        .then(data => callback(data))
-        .catch(error => console.error('Error loading data:', error));
-}
+// Import the data from File.js
+import products from './File.js';
 
-// Function to populate the client dropdown
-function populateClientDropdown(products) {
-    const clientDropdown = document.getElementById('clientDropdown');
-    const clients = [...new Set(products.map(product => product.client))]; // Get unique clients
+// Select DOM elements
+const clientSelect = document.getElementById('client-select');
+const productTable = document.getElementById('product-table').getElementsByTagName('tbody')[0];
 
-    // Create options for each client
-    clients.forEach(client => {
-        const option = document.createElement('option');
-        option.value = client;
-        option.textContent = client;
-        clientDropdown.appendChild(option);
-    });
-}
+// Populate the dropdown list with unique client names
+const uniqueClients = [...new Set(products.map(product => product.client))];
 
-// Function to display products based on selected client
-function displayProducts(products) {
-    const selectedClient = document.getElementById('clientDropdown').value;
-    const productListDiv = document.getElementById('productList');
-    
-    if (!selectedClient) {
-        productListDiv.innerHTML = ''; // Clear the product list
-        return;
-    }
+uniqueClients.forEach(client => {
+    const option = document.createElement('option');
+    option.textContent = client;
+    clientSelect.appendChild(option);
+});
 
+// Function to update the product table based on the selected client
+function updateProductTable(selectedClient) {
+    // Filter products based on the selected client
     const filteredProducts = products.filter(product => product.client === selectedClient);
 
-    // Create an HTML list to display products
-    const productListHTML = filteredProducts.map(product => `
-        <div class="product">
-            <p>Date: ${product.date}</p>
-            <p>Type: ${product.type}</p>
-            <p>Name: ${product.name}</p>
-            <p>Quantity: ${product.quantity}</p>
-        </div>
-    `).join('');
+    // Clear the current table
+    productTable.innerHTML = '';
 
-    productListDiv.innerHTML = productListHTML;
+    // Populate the table with filtered products
+    filteredProducts.forEach(product => {
+        const row = productTable.insertRow();
+        row.innerHTML = `
+            <td>${product.date}</td>
+            <td>${product.type}</td>
+            <td>${product.client}</td>
+            <td>${product.name}</td>
+            <td>${product.quantity}</td>
+        `;
+    });
 }
 
-// Load data and initialize the page
-loadData(data => {
-    // Assuming data from File.js is an array of objects
-    populateClientDropdown(data);
-    document.getElementById('clientDropdown').addEventListener('change', () => {
-        displayProducts(data);
-    });
+// Event listener for client selection
+clientSelect.addEventListener('change', () => {
+    const selectedClient = clientSelect.value;
+    updateProductTable(selectedClient);
 });
+
+// Initial table population with the first client (or you can choose a default client)
+if (uniqueClients.length > 0) {
+    updateProductTable(uniqueClients[0]);
+}
