@@ -1,47 +1,88 @@
-// Import the data from File.js
-import products from './File.js';
+// Get the client name from local storage
+let clientName = localStorage.getItem('clientName');
 
-// Select DOM elements
-const clientSelect = document.getElementById('client-select');
-const productTable = document.getElementById('product-table').getElementsByTagName('tbody')[0];
+if (!clientName) {
+    clientName = prompt('Please enter your name or the name of your company:');
+    localStorage.setItem('clientName', clientName);
+}
 
-// Populate the dropdown list with unique client names
-const uniqueClients = [...new Set(products.map(product => product.client))];
+// Display the client name in a stylish div
+const nameDiv = document.createElement('div');
+nameDiv.innerHTML = `Client Name: ${clientName}`;
+nameDiv.classList.add('client-name');
+document.body.appendChild(nameDiv);
 
-uniqueClients.forEach(client => {
-    const option = document.createElement('option');
-    option.textContent = client;
-    clientSelect.appendChild(option);
-});
-
-// Function to update the product table based on the selected client
-function updateProductTable(selectedClient) {
-    // Filter products based on the selected client
-    const filteredProducts = products.filter(product => product.client === selectedClient);
-
-    // Clear the current table
-    productTable.innerHTML = '';
-
-    // Populate the table with filtered products
-    filteredProducts.forEach(product => {
-        const row = productTable.insertRow();
+function generateTableRows(products) {
+    const table = document.getElementById('product-table');
+    table.innerHTML = ''; // clear the table
+    products.forEach(product => {
+        const row = document.createElement('tr');
+        row.className = "active-row";
         row.innerHTML = `
             <td>${product.date}</td>
             <td>${product.type}</td>
             <td>${product.client}</td>
             <td>${product.name}</td>
-            <td>${product.quantity}</td>
+            <td>
+                <input class="inputquantity" type="number" value="${product.quantity}">
+            </td>
         `;
+
+        const quantityInput = row.querySelector('input[type="number"]');
+        quantityInput.addEventListener('change', () => {
+            product.quantity = parseInt(quantityInput.value);
+        });
+
+        table.appendChild(row);
     });
 }
 
-// Event listener for client selection
-clientSelect.addEventListener('change', () => {
-    const selectedClient = clientSelect.value;
-    updateProductTable(selectedClient);
+const searchField = document.getElementById('search-field');
+const categorySelect = document.getElementById('category-select');
+
+searchField.addEventListener('input', () => {
+    const query = searchField.value.toLowerCase();
+    const filteredProducts = products.filter(product => {
+        return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
+    });
+    generateTableRows(filteredProducts);
 });
 
-// Initial table population with the first client (or you can choose a default client)
-if (uniqueClients.length > 0) {
-    updateProductTable(uniqueClients[0]);
+categorySelect.addEventListener('change', () => {
+    const category = categorySelect.value;
+    const filteredProducts = category ? products.filter(product => product.category === category) : products;
+    generateTableRows(filteredProducts);
+});
+
+window.onload = () => {
+    generateTableRows(products);
+};
+
+// Add your additional JavaScript code here
+
+function generatePdf() {
+    let p = [];
+    let i = 1;
+    products.forEach(product => {
+        if (product.checked == true) {
+            p.push([i++, product.name, product.category, 0, product.quantity, product.unit, 0]);
+        }
+    });
+
+    props.invoice.table = p;
+
+    var pdfObject = jsPDFInvoiceTemplate.default(props);
+    console.log('Object created:', pdfObject);
 }
+
+var props = {
+    outputType: jsPDFInvoiceTemplate.OutputType.Save,
+    returnJsPDFDocObject: true,
+    fileName: "solidernet 2023",
+    orientationLandscape: false,
+    compress: true,
+
+    // Add your invoice and business details here
+
+    // ... (rest of the properties)
+};
