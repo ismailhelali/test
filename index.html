@@ -1,67 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Search</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SOLIDERNET Product List</title>
+  
+  <!-- include jspdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<!-- include Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- include Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.16.0/dist/umd/popper.min.js" integrity="sha384-/N/t9aO/QE+tNg8+DpTJ/Yzq3Z"></script>
+  
+  <!-- include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!-- include custom CSS -->
+  <style>
+    /* add custom styling here */
+  </style>
 </head>
 <body>
-    <h1>Product Search</h1>
-    <input type="text" id="search-input" placeholder="Search products...">
-    <div id="product-list"></div>
-  <script src="File.js"></script>
-</body>
-</html>
+  <div class="container-fluid">
+    <!-- search field -->
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <input type="search" class="form-control" id="search-field" placeholder="Search products">
+      </div>
+    </div>
+    <!-- category dropdown -->
+    <div class="row mt-3">
+      <div class="col-md-6 offset-md-3">
+        <select class="form-control" id="category-select">
+<option value="">All categories</option>      
 
-<script>
+          <!-- add options for categories here -->
+        </select>
+      </div>
+    </div>
+    <!-- product table -->
+    <table class="table mt-3">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Product</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody id="product-table">
+        <!-- table rows will be added here by JavaScript -->
+      </tbody>
+    </table>
+    <!-- PDF button -->
+    <div class="row mt-3">
+      <div class="col-md-6 offset-md-3">
+        <button class="btn btn-primary btn-block" id="pdf-button">Enregistrer Votre Liste PDF</button>
+      </div>
+    </div>
+  </div>
+  <script src="products.js"></script>
+   <script>
+ 
 
+function generateTableRows(products) {
+  const table = document.getElementById('product-table');
+  table.innerHTML = ''; // clear the table
+  products.forEach(product => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+           <td>${product.name}</td>
+      <td>${product.name}</td>
+      <td>${product.name}</td>
+      <td>${product.name}</td>
 
-
-// Function to display filtered products
-function displayFilteredProducts(query) {
-    const productList = document.getElementById('product-list');
-    productList.innerHTML = '';
-
-    const filteredProducts = products.filter(product => {
-        const searchTerms = query.toLowerCase().split(' ');
-        return searchTerms.every(term => {
-            return (
-                product.date.toLowerCase().includes(term) ||
-                product.type.toLowerCase().includes(term) ||
-                product.client.toLowerCase().includes(term) ||
-                product.name.toLowerCase().includes(term)
-            );
-        });
+      <td>${product.name}</td>
+      
+    `;
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener('click', () => {
+      product.checked = checkbox.checked;
     });
-
-    if (filteredProducts.length === 0) {
-        productList.innerHTML = '<p>No matching products found.</p>';
-    } else {
-        filteredProducts.forEach(product => {
-            const productItem = document.createElement('div');
-            productItem.classList.add('product-item');
-            productItem.innerHTML = `
-                <p>Date: ${product.date}</p>
-                <p>Type: ${product.type}</p>
-                <p>Client: ${product.client}</p>
-                <p>Name: ${product.name}</p>
-                <p>Quantity: ${product.quantity}</p>
-            `;
-            productList.appendChild(productItem);
-        });
-    }
+    const quantityInput = row.querySelector('input[type="number"]');
+    quantityInput.addEventListener('change', () => {
+      product.quantity = parseInt(quantityInput.value);
+    });
+    const unitSelect = row.querySelector('select');
+    unitSelect.addEventListener('change', () => {
+      product.unit = unitSelect.value;
+    });
+    table.appendChild(row);
+  });
 }
 
-// Listen for input in the search box
-const searchInput = document.getElementById('search-input');
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value;
-    displayFilteredProducts(query);
+const searchField = document.getElementById('search-field');
+const categorySelect = document.getElementById('category-select');
+
+
+searchField.addEventListener('input', () => {
+  const query = searchField.value.toLowerCase();
+  const filteredProducts = products.filter(product => {
+    return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
+  });
+  generateTableRows(filteredProducts);
 });
 
-// Display all products initially
-displayFilteredProducts('');
+categorySelect.addEventListener('change', () => {
+  const category = categorySelect.value;
+  const filteredProducts = category ? products.filter(product => product.category === category) : products;
+  generateTableRows(filteredProducts);
+});
 
-</script>
 
+// get the button element
+const button = document.getElementById('pdf-button');
+
+// add a click event listener to the button
+button.addEventListener('click', () => {
+  // create a new PDF document
+  const doc = new jsPDF();
+
+  // add a title to the document
+  doc.text('Selected products', 10, 10);
+
+  // initialize a y-position variable for adding content to the PDF
+  let y = 20;
+
+  // loop through the products array
+  for (const product of products) {
+    // check if the product is checked
+    if (product.checked) {
+      // add the product name, quantity, and unit to the PDF
+      doc.text(`${product.name} - Quantity: ${product.quantity} - Unit: ${product.unit}`, 10, y);
+      // increment the y-position for the next piece of content
+      y += 10;
+    }
+  }
+
+  // save the PDF
+  doc.save('selected-products.pdf');
+});
+
+
+
+
+
+window.onload = () => {
+  generateTableRows(products);
+};
+
+
+
+  </script>
+
+
+
+  </body>
+  </html>
