@@ -3,25 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>VCF Contact Viewer</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    <h1>Product List</h1>
-    <table id="productTable">
+    <h1>VCF Contact Viewer</h1>
+    <input type="file" id="fileInput">
+    <input type="text" id="searchInput" placeholder="Search contacts">
+    <table id="contactTable">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Client</th>
                 <th>Name</th>
-                <th>Quantity</th>
+                <th>Email</th>
+                <th>Phone</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
-            <!-- Product data will be inserted here -->
-        </tbody>
+        <tbody></tbody>
     </table>
-    <script src="script.js"></script>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', handleFile);
+        document.getElementById('searchInput').addEventListener('input', searchContacts);
+
+        let contactsData = [];
+
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const text = event.target.result;
+                parseVCF(text);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseVCF(vcfText) {
+            // Assuming a simple VCF format with BEGIN:VCARD and END:VCARD delineating each contact.
+            const contacts = vcfText.split('BEGIN:VCARD');
+            contacts.shift(); // Remove the empty string before the first BEGIN:VCARD
+
+            contactsData = contacts.map(contact => {
+                const nameMatch = contact.match(/FN:(.*?)\n/);
+                const emailMatch = contact.match(/EMAIL:(.*?)\n/);
+                const phoneMatch = contact.match(/TEL:(.*?)\n/);
+
+                const name = nameMatch ? nameMatch[1] : 'N/A';
+                const email = emailMatch ? emailMatch[1] : 'N/A';
+                const phone = phoneMatch ? phoneMatch[1] : 'N/A';
+
+                return { name, email, phone };
+            });
+
+            displayContacts(contactsData);
+        }
+
+        function displayContacts(contacts) {
+            const tbody = document.querySelector('#contactTable tbody');
+            tbody.innerHTML = '';
+
+            contacts.forEach(contact => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${contact.name}</td>
+                    <td>${contact.email}</td>
+                    <td>${contact.phone}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function searchContacts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredContacts = contactsData.filter(contact =>
+                contact.name.toLowerCase().includes(searchTerm) ||
+                contact.email.toLowerCase().includes(searchTerm) ||
+                contact.phone.toLowerCase().includes(searchTerm)
+            );
+            displayContacts(filteredContacts);
+        }
+    </script>
 </body>
 </html>
